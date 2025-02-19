@@ -1,8 +1,10 @@
 from django.db import models
+from core.models import Person
+from design.models import Design
 
 # Create your models here.
 class Batch(models.Model):
-    reference = models.ForeignKey('Design', on_delete=models.CASCADE)
+    reference = models.ForeignKey(Design, on_delete=models.CASCADE)
     programmed_quantity = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -16,7 +18,7 @@ class Process(models.Model):
         return self.description
 
 class Workshop(models.Model):
-    responsible = models.ForeignKey('Person', on_delete=models.CASCADE)
+    responsible = models.ForeignKey(Person, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
 

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Collection detail page</title>
+    </head>
+    <body>
+        <h1>{{collection.name}}</h1>
+        <p>{{collection.description}}</p><br>
+        <p>{{collection.created_at}}</p><br>
+        <a href="/design/collections/update/{{collection.id}}">Edit collection</a><br>
+        <a href="/design/collections/delete/{{collection.id}}">Delete collection</a><br>
+        <a href="/design/collections">Back to Collections</a>
+    </body>
+</html>
