@@ -55,7 +55,11 @@ def delete_collection(request, collection_id):
 
 #Design functionalities
 def designs(request):
-    designs = Design.objects.all()
+    searchTerm = request.GET.get('searchDesign')
+    if searchTerm:
+        designs = Design.objects.filter(title__contains=searchTerm)
+    else:
+        designs = Design.objects.all()
     return render(request, 'designs.html', {'designs': designs})
 
 def design(request, design_reference):
