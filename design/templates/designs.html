@@ -3,12 +3,22 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Collection detail page</title>
+        <title>Designs</title>
     </head>
     <body>
-        <h1>{{collection.name}}</h1>
-        <p>{{collection.description}}</p><br>
-        <p>{{collection.created_at}}</p><br>
+        <h1>Designs</h1>
+        <div class="container">
+            <form action="">
+                <label for="searchDesign" class="form-label">
+                    Search Design
+                </label>
+                <input type="text" name="searchDesign" id="searchDesign">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        {% if searchTerm %}
+            <p>Searching for: {{searchTerm}}</p>
+        {% endif %}
         <div class="design-list">
             {% for design in designs %}
                 <div class="collection">
@@ -17,9 +27,6 @@
                     <a href="/design/designs/{{design.reference}}">View Design</a>
                 </div>
             {% endfor %}
-        </div><br><br>
-        <a href="/design/collections/update/{{collection.id}}">Edit collection</a><br>
-        <a href="/design/collections/delete/{{collection.id}}">Delete collection</a><br>
-        <a href="/design/collections">Back to Collections</a>
+        </div>
     </body>
 </html>

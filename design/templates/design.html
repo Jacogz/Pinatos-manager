@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Design detail page</title>
+    </head>
+    <body>
+        <h1>{{design.title}}</h1>
+        <p>{{design.reference}}</p><br>
+        <p>{{design.collection}}</p><br>
+        <p>{{design.description}}</p><br>
+        <p>{{design.created_at}}</p><br>
+        <p>{{design.updated_at}}</p><br>
+        <img src="{{design.image}}" alt="design image"><br>
+        <a href="/design/update/{{design.reference}}">Edit design</a><br>
+        <a href="/design/delete/{{design.reference}}">Delete design</a><br>
+        <a href="/design/designs">Back to designs</a>
+    </body>
+</html>

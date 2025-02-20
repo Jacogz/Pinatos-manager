@@ -20,4 +20,4 @@ class Design(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return 'Reference: ' + self.reference + ' - ' + self.title
+        return 'Reference: ' + str(self.reference) + ' - ' + self.title

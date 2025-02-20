@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Collection, Design
-from .forms import collectionCreationForm, collectionUpdateForm
+from .forms import collectionCreationForm, collectionUpdateForm, designCreationForm, designUpdateForm
 
 # Create your views here.
 def index(request):
@@ -18,7 +18,8 @@ def collections(request):
 
 def collection(request, collection_id):
     collection = Collection.objects.get(id=collection_id)
-    return render(request, 'collection.html', {'collection': collection})
+    designs = Design.objects.filter(collection=collection)
+    return render(request, 'collection.html', {'collection': collection, 'designs': designs})
 
 def create_collection(request):
     if request.method == 'POST':
@@ -42,7 +43,7 @@ def update_collection(request, collection_id):
             collection = obj
             return redirect(f'/design/collections/{collection.id}')
     else:
-        form = collectionUpdateForm(initial={'name': collection.name, 'description': collection.description})
+        form = collectionUpdateForm(instance=collection)
     return render(request, 'collectionUpdateForm.html', {'form': form})
 
 def delete_collection(request, collection_id):
@@ -51,24 +52,43 @@ def delete_collection(request, collection_id):
     HttpResponse("Collection deleted successfully")
     return redirect('/design/collections')
 
+
 #Design functionalities
 def designs(request):
-    return HttpResponse("Designs view")
+    designs = Design.objects.all()
+    return render(request, 'designs.html', {'designs': designs})
 
-def design(request):
-    return HttpResponse("Design view")
-
-def create(request):
-    return render(request, 'designCreationForm.html')
+def design(request, design_reference):
+    design = Design.objects.get(reference=design_reference)
+    return render(request, 'design.html', {'design': design})
 
 def create_design(request):
-    return HttpResponse("Create design processing view")
+    if request.method == 'POST':
+        form = designCreationForm(request.POST, request.FILES)
+        if form.is_valid():
+            data = form.cleaned_data
+            new_design = Design.objects.create(collection=data['collection'], title=data['title'], description=data['description'], image=data['image'])
+            new_design.save()
+            return redirect(f'/design/designs/{new_design.reference}')
+    else:
+        form = designCreationForm()
+    return render(request, 'designCreationForm.html', {'form': form})
 
-def update(request):
-    return HttpResponse("Update design view")
+def update_design(request, design_reference):
+    design = Design.objects.get(reference=design_reference)
+    if request.method == 'POST':
+        form = designUpdateForm(request.POST, request.FILES, instance=design)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.save()
+            design = obj
+            return redirect(f'/design/designs/{design.reference}')
+    else:
+        form = designUpdateForm(instance=design)
+    return render(request, 'designUpdateForm.html', {'form': form})
 
-def update_design(request):
-    return HttpResponse("Update design processing view")
-
-def delete(request):
-    return HttpResponse("Delete design view")
+def delete_design(request, design_reference):
+    design = Design.objects.get(reference=design_reference)
+    design.delete()
+    HttpResponse("Design deleted successfully")
+    return redirect('/design/designs')
