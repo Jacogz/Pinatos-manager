@@ -5,7 +5,7 @@ from .forms import collectionCreationForm, collectionUpdateForm, designCreationF
 
 # Create your views here.
 def index(request):
-    return render(request, 'designIndex.html')
+    return render(request, 'design/designIndex.html')
 
 #Collection functionalities
 def collections(request):
@@ -14,12 +14,12 @@ def collections(request):
         collections = Collection.objects.filter(name__contains=searchTerm)
     else:
         collections = Collection.objects.all()
-    return render(request, 'collections.html', {'searchTerm':searchTerm, 'collections': collections})
+    return render(request, 'design/collections.html', {'searchTerm':searchTerm, 'collections': collections})
 
 def collection(request, collection_id):
     collection = Collection.objects.get(id=collection_id)
     designs = Design.objects.filter(collection=collection)
-    return render(request, 'collection.html', {'collection': collection, 'designs': designs})
+    return render(request, 'design/collection.html', {'collection': collection, 'designs': designs})
 
 def create_collection(request):
     if request.method == 'POST':
@@ -31,7 +31,7 @@ def create_collection(request):
             return redirect(f'/design/collections/{new_collection.id}')
     else:
         form = collectionCreationForm()
-    return render(request, 'collectionCreationForm.html', {'form': form})
+    return render(request, 'design/collectionCreationForm.html', {'form': form})
 
 def update_collection(request, collection_id):
     collection = Collection.objects.get(id=collection_id)
@@ -44,7 +44,7 @@ def update_collection(request, collection_id):
             return redirect(f'/design/collections/{collection.id}')
     else:
         form = collectionUpdateForm(instance=collection)
-    return render(request, 'collectionUpdateForm.html', {'form': form})
+    return render(request, 'design/collectionUpdateForm.html', {'form': form})
 
 def delete_collection(request, collection_id):
     collection = Collection.objects.get(id=collection_id)
@@ -60,11 +60,11 @@ def designs(request):
         designs = Design.objects.filter(title__contains=searchTerm)
     else:
         designs = Design.objects.all()
-    return render(request, 'designs.html', {'designs': designs})
+    return render(request, 'design/designs.html', {'designs': designs})
 
 def design(request, design_reference):
     design = Design.objects.get(reference=design_reference)
-    return render(request, 'design.html', {'design': design})
+    return render(request, 'design/design.html', {'design': design})
 
 def create_design(request):
     if request.method == 'POST':
@@ -76,7 +76,7 @@ def create_design(request):
             return redirect(f'/design/designs/{new_design.reference}')
     else:
         form = designCreationForm()
-    return render(request, 'designCreationForm.html', {'form': form})
+    return render(request, 'design/designCreationForm.html', {'form': form})
 
 def update_design(request, design_reference):
     design = Design.objects.get(reference=design_reference)
@@ -89,7 +89,7 @@ def update_design(request, design_reference):
             return redirect(f'/design/designs/{design.reference}')
     else:
         form = designUpdateForm(instance=design)
-    return render(request, 'designUpdateForm.html', {'form': form})
+    return render(request, 'design/designUpdateForm.html', {'form': form})
 
 def delete_design(request, design_reference):
     design = Design.objects.get(reference=design_reference)

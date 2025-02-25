@@ -1,0 +1,15 @@
+{% extends 'partials/base.html' %}
+{% block stylesheets %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
+{% endblock %}
+{% block title %}Design Creation Form{% endblock %}
+{% block content %}
+    <h1>Create Design</h1>
+    <form method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        {{form}}
+        <button type="submit">Create Design</button> 
+        
+    </form>
+{% endblock %}
