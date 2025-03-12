@@ -1,0 +1,30 @@
+{% extends 'partials/base.html' %}
+{% block stylesheets %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
+{% endblock %}
+{% block title %}Collections{% endblock %}
+{% block content %}
+    <h1>Collections</h1>
+    <div class="container">
+        <form action="">
+            <label for="searchCollection" class="form-label">
+                Search Collection
+            </label>
+            <input type="text" name="searchCollection" id="searchCollection">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    {% if searchTerm %}
+        <p>Searching for: {{searchTerm}}</p>
+    {% endif %}
+    <div class="collection-list">
+        {% for collection in collections %}
+            <div class="collection">
+                <h2>{{collection.name}}</h2>
+                <p>{{collection.description}}</p>
+                <a href="/design/collections/{{collection.id}}">View Collection</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'partials/base.html' %}
+{% block stylesheets %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
+{% endblock %}
+{% block title %}Collection Creation Form{% endblock %}
+{% block content %}
+    <h1>Create Collection</h1>
+    <form method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        {{form}}
+        <button type="submit">Create Collection</button> 
+    </form>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'partials/base.html' %}
+{% block stylesheets %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
+{% endblock %}
+{% block title %}{{collection.name}}{% endblock %}
+{% block content %}
+        <h1>{{collection.name}}</h1>
+        <p>{{collection.description}}</p><br>
+        <p>{{collection.created_at}}</p><br>
+        <div class="design-list">
+            {% for design in designs %}
+                <div class="collection">
+                    <h2>{{design.title}}</h2>
+                    <p>{{design.description}}</p>
+                    <a href="/design/designs/{{design.reference}}">View Design</a>
+                </div>
+            {% endfor %}
+        </div><br><br>
+        <a href="/design/collections/update/{{collection.id}}">Edit collection</a><br>
+        <a href="/design/collections/delete/{{collection.id}}">Delete collection</a><br>
+        <a href="/design/collections">Back to Collections</a>
+{% endblock %}
