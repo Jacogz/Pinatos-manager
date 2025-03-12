@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Collection, Design
-from .forms import collectionCreationForm, collectionUpdateForm, designCreationForm, designUpdateForm
+#from .forms import collectionCreationForm, collectionUpdateForm, designCreationForm, designUpdateForm
 
 # Create your views here.
 def index(request):

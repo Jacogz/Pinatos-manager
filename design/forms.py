@@ -1,6 +1,6 @@
 from django import forms
 from .models import Collection, Design
-
+"""
 class collectionCreationForm(forms.ModelForm):
     class Meta:
         model = Collection
@@ -39,4 +39,4 @@ class designUpdateForm(forms.ModelForm):
             
         if commit:
             design.save()
-        return design
+        return design"""
