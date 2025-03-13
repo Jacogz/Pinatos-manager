@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 
+app_name = 'design'
+
 urlpatterns = [
     #Index of design module
     path('', views.index, name='designIndex'),
@@ -14,8 +16,8 @@ urlpatterns = [
     
     #Designs endpoints
     path('designs/', views.designs, name='designs'),
-    path('designs/<int:design_reference>', views.design, name='design'),
+    path('designs/<int:design_id>', views.design, name='design'),
     path('create', views.create_design, name='design_creation_processing'),
-    path('update/<int:design_reference>', views.update_design, name='design_update_form'),
-    path('delete/<int:design_reference>', views.delete_design, name='design_deletion'),
+    path('update/<int:design_id>', views.update_design, name='design_update_form'),
+    path('delete/<int:design_id>', views.delete_design, name='design_deletion'),
 ]

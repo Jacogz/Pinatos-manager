@@ -1,0 +1,14 @@
+{% extends 'partials/base.html' %}
+{% block stylesheets %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
+{% endblock %}
+{% block title %}Workshop Creation Form{% endblock %}
+{% block content %}
+    <h1>Create Workshop</h1>
+    <form method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        {{form}}
+        <button type="submit">Create Workshop</button> 
+    </form>
+{% endblock %}

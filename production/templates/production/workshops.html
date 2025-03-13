@@ -1,0 +1,24 @@
+{% extends 'partials/base.html' %}
+{% block stylesheets %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
+{% endblock %}
+{% block title %}Workshops{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Workshops</h1>
+    <a href="{% url 'production:workshop_creation' %}">Create Workshop</a>
+    <div class="workshop-list container">
+        {% for workshop in workshops %}
+        <div class="row">
+            <div class="collection col-md-6">
+                <h2>ID: {{workshop.id}}</h2>
+                <p>Responsible: {{workshop.responsible.name}}</p>
+            </div>
+            <a href="{% url 'production:workshop' workshop.id %}">View Workshop</a>
+        </div>
+        {% endfor %}
+    </div>
+    <a href="{% url 'production:productionIndex' %}">Back to production index</a>
+</div>
+{% endblock %}

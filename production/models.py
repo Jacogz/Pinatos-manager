@@ -17,8 +17,8 @@ class Workshop(models.Model):
     responsible = models.ForeignKey(Person, on_delete=models.PROTECT, blank=False)
     name = models.CharField(max_length=100, null=False, blank=False)
     address = models.CharField(max_length=150, null=False, blank=False)
-    workshop_email = models.EmailField()
-    workshop_phone_number = models.CharField(max_length=20)
+    email = models.EmailField(blank=True)
+    phone_number = models.CharField(max_length=20, blank=True)
 
     def __str__(self):
         return self.name

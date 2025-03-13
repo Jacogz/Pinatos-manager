@@ -21,11 +21,11 @@ class Design(models.Model):
     description = models.TextField(blank=False, null=False)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE, blank=False)
     image = models.ImageField(upload_to='designs/', blank=True, null=True)
-    technical_sheet = models.FileField(upload_to='technical_sheets/', blank=True, null=True)
+    technical_sheet = models.FileField(upload_to='technical_sheets/', null=False, blank=False)
     processes = models.ManyToManyField(Process)
     created_at = models.DateTimeField(auto_now_add=True, null=False)
     updated_at = models.DateTimeField(auto_now=True, null=False)
 
     def __str__(self):
-        return 'Reference: ' + str(self.id) + ' - ' + self.title + ' - ' + self.image.url
+        return 'Id: ' + str(self.id) + ' - ' + self.title + ' - ' + self.image.url
     

@@ -1,6 +1,6 @@
 from django import forms
 from .models import Collection, Design
-"""
+
 class collectionCreationForm(forms.ModelForm):
     class Meta:
         model = Collection
@@ -22,12 +22,12 @@ class collectionUpdateForm(forms.ModelForm):
 class designCreationForm(forms.ModelForm):
     class Meta:
         model = Design
-        fields = ['collection', 'title', 'description', 'image']
+        fields = ['collection', 'title', 'description', 'image', 'technical_sheet']
         
 class designUpdateForm(forms.ModelForm):
     class Meta:
         model = Design
-        fields = ['collection', 'title', 'description', 'image']
+        fields = ['collection', 'title', 'description', 'image', 'technical_sheet']
 
     def save(self, commit=True):
         design = self.instance
@@ -36,7 +36,9 @@ class designUpdateForm(forms.ModelForm):
         design.description = self.cleaned_data['description']
         if self.cleaned_data['image']:
             design.image = self.cleaned_data['image']
+        if self.cleaned_data['technical_sheet']:
+            design.technical_sheet = self.cleaned_data['technical_sheet']
             
         if commit:
             design.save()
-        return design"""
+        return design

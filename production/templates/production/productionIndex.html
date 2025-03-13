@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Production Index</title>
-    </head>
-    <body>
-        <h1>Production module Index page production.views.index</h1>
-    </body>
-</html>
+{% extends 'partials/base.html' %}
+{% block stylesheets %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
+{% endblock %}
+{% block title %}Production Index{% endblock %}
+{% block content %}
+    <h1>Production module Index page production.views.index</h1>
+    <a href="{% url 'production:workshops' %}">Workshops</a><br>
+    <a href="{% url 'production:batches' %}">Batches</a><br>
+{% endblock %}

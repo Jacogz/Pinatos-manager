@@ -1,0 +1,25 @@
+{% extends 'partials/base.html' %}
+{% block stylesheets %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
+{% endblock %}
+{% block title %}Batches{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Batches</h1>
+    <a href="{% url 'production:batch_creation' %}">Create Batch</a>
+    <div class="design-list container">
+        {% for batch in batches %}
+        <div class="row">
+            <div class="collection col-md-6">
+                <h2>ID: {{batch.id}}</h2>
+                <p>Initial quantity: {{batch.initial_quantity}}</p>
+                <p>Status: {{batch.status}}</p>
+            </div>
+            <a href="{% url 'production:batch' batch.id %}">View Batch</a>
+        </div>
+        {% endfor %}
+    </div>
+    <a href="{% url 'production:productionIndex' %}">Back to production index</a>
+</div>
+{% endblock %}

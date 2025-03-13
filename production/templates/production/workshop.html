@@ -1,0 +1,49 @@
+{% extends 'partials/base.html' %}
+{% block stylesheets %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
+{% endblock %}
+{% block title %}Workshop: {{workshop.name}}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>ID: {{workshop.id}}</h2>
+            <p>Responsible: {{workshop.responsible.name}}</p>
+            <p>Address: {{workshop.address}}</p>
+            {% if workshop.email %}
+                <p>Email: {{workshop.email}}</p>
+            {% else %}
+                {% if workshop.responsible.email %}
+                    <p>Email: {{workshop.responsible.email}}</p>
+                {% else %}
+                    <p>Email: No email available</p>
+                {% endif %}
+            {% endif %}
+            {% if workshop.phone_number %}
+                <p>Phone number: {{workshop.phone_number}}</p>
+            {% else %}
+                {% if workshop.responsible.phone %}
+                    <p>Phone number: {{workshop.responsible.phone}}</p>
+                {% else %}
+                    <p>Phone number: No number available</p>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="container">
+        {% for batch in assignments %}
+        <div class="row">
+            <div class="collection col-md-6">
+                <h2>ID: {{batch.id}}</h2>
+                <p>Initial quantity: {{batch.initial_quantity}}</p>
+                <p>Status: {{batch.status}}</p>
+            </div>
+            <a href="{% url 'production:batch' batch.id %}">View Batch</a>
+        </div>
+        {% endfor %}
+    </div>
+    <a href="{% url 'production:workshop_update' workshop.id %}">Edit Workshop</a>
+    <a href="{% url 'production:workshops' %}">Back to Workshops</a>
+</div>
+{% endblock %}
