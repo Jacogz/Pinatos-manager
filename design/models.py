@@ -12,6 +12,7 @@ class Collection(models.Model):
 
 class Process(models.Model):
     description = models.TextField(null=False, blank=False)
+    hierarchy = models.IntegerField(blank=False)
     
     def __str__(self):
         return self.description

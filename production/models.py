@@ -12,6 +12,13 @@ class Batch(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def get_processes(self):
+        design_processes= self.design.processes.all()
+        processes = design_processes.order_by("hierarchy")
+        return processes
+            
+        
 
 class Workshop(models.Model):
     responsible = models.ForeignKey(Person, on_delete=models.PROTECT, blank=False)
@@ -27,6 +34,7 @@ class ProcessAssignment(models.Model):
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE, blank=False)
     process = models.ForeignKey(Process, on_delete=models.CASCADE, blank=False)
     workshop = models.ForeignKey(Workshop, on_delete=models.PROTECT, blank=False)
+    status = models.CharField(max_length=20, blank=False, null=False, default='active')
     assignment_date = models.DateTimeField(blank=False, null=False)
     expected_delivery = models.DateTimeField(blank=False, null=False)
     delivery_date = models.DateTimeField()
