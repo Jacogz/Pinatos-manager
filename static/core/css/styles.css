@@ -161,7 +161,8 @@ body {
     box-shadow: #0e223e 10px 10px;
 }
 
-.collection-form label{
+.collection-form label,
+.design-form label{
     font-size: 1rem;
     font-weight: bold;
     align-self: flex-start;
@@ -169,7 +170,8 @@ body {
 
 }
 
-.collection-form input[type="text"] {
+.collection-form input,
+.design-form input {
     margin-bottom: 1rem;
 }
 

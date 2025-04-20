@@ -3,7 +3,7 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="{% url 'design:designIndex' %}">Diseño</a></li>
     <li class="breadcrumb-item"><a href="{% url 'design:collections' %}">Colecciones</a></li>
-    <li class="breadcrumb-item"><a href="/design/collections/2">{{collection.name}}</a></li>
+    <li class="breadcrumb-item"><a href="/design/collections/{{collection.id}}">{{collection.name}}</a></li>
     <li class="breadcrumb-item"><a href="">Editar</a></li>
 {% endblock %}
 {% block content %}

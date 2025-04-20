@@ -1,22 +1,22 @@
 {% extends 'partials/base.html' %}
-{% block stylesheets %}
-{% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
-{% endblock %}
 {% block title %}Designs{% endblock %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'design:designIndex' %}">Diseño</a></li>
+<li class="breadcrumb-item"><a href="{% url 'design:designs' %}">Diseños</a></li>
+{% endblock %}
 {% block content %}
-    <h1>Designs</h1>
+    <h1>Diseños</h1>
     <div class="container">
         <form action="">
             <label for="searchDesign" class="form-label">
-                Search Design
+                Buscar
             </label>
             <input type="text" name="searchDesign" id="searchDesign">
-            <button type="submit">Search</button>
+            <button type="submit" aria-label="search-button"><i class="lni lni-search-1"></i></button>
         </form>
     </div>
     {% if searchTerm %}
-        <p>Searching for: {{searchTerm}}</p>
+        <p>Buscando: {{searchTerm}}</p>
     {% endif %}
     <div class="design-list">
         {% for design in designs %}

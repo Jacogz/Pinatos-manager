@@ -13,7 +13,7 @@ class DesignService:
     def get_all_designs(search_term=None):
         # FR-3: CRUD designs and collections (Updated to use service)
         if search_term:
-            return Design.objects.filter(title_contains=search_term)
+            return Design.objects.filter(title__contains=search_term)
         else:
             return Design.objects.all()
         
@@ -21,7 +21,7 @@ class DesignService:
     def get_all_collections(search_term=None):
         # FR-3: CRUD designs and collections (Updated to use service)
         if search_term:
-            return Collection.objects.filter(name_contains=search_term)
+            return Collection.objects.filter(name__contains=search_term)
         else:
             return Collection.objects.all()
         
@@ -66,6 +66,60 @@ class DesignService:
         try:
             collection = form.save()
             return ProcessResult(success=True, errors=None, objects={'collection': collection})
+        
+        except Exception as e:
+            return ProcessResult(success=False, errors=str(e))
+    
+    @staticmethod
+    def delete_collection(collection_id):
+        # FR-3: CRUD designs and collections (Updated to use service)
+        try:
+            collection = Collection.objects.get(id=collection_id)
+            collection.delete()
+            return ProcessResult(success=True, errors=None)
+        
+        except Exception as e:
+            return ProcessResult(success=False, errors=str(e))
+    
+    @staticmethod
+    def create_design(form_data, form_files):
+        # FR-3: CRUD designs and collections (Updated to use service)
+        form = designForm(form_data, form_files)
+        
+        if not form.is_valid():
+            result = ProcessResult(success=False, errors=form.errors)
+            return result
+        
+        try:
+            design = form.save()
+            return ProcessResult(success=True, errors=None, objects={'design': design})
+        
+        except Exception as e:
+            return ProcessResult(success=False, errors=str(e))
+    
+    @staticmethod
+    def update_design(design, form_data, form_files):
+        # FR-3: CRUD designs and collections (Updated to use service)
+        form = designUpdateForm(form_data, form_files, instance=design)
+        
+        if not form.is_valid():
+            result = ProcessResult(success=False, errors=form.errors)
+            return result
+        
+        try:
+            design = form.save()
+            return ProcessResult(success=True, errors=None, objects={'design': design})
+        
+        except Exception as e:
+            return ProcessResult(success=False, errors=str(e))
+    
+    @staticmethod
+    def delete_design(design_id):
+        # FR-3: CRUD designs and collections (Updated to use service)
+        try:
+            design = Design.objects.get(id=design_id)
+            design.delete()
+            return ProcessResult(success=True, errors=None)
         
         except Exception as e:
             return ProcessResult(success=False, errors=str(e))

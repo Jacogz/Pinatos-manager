@@ -1,7 +1,7 @@
 {% load static %}
 <aside id="sidebar">
     <div class="d-flex">
-        <button id="toggle-btn" type="button">
+        <button id="toggle-btn" type="button" aria-label="sidebar-toggle">
             <i class="lni lni-menu-hamburger-1"></i>
         </button>
         <div class="sidebar-logo">
@@ -10,7 +10,7 @@
     </div>
     <ul class="sidebar-nav">
         <li class="sidebar-item">
-            <a href="" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse" data-bs-target="#diseno" aria-expanded="false" aria-controls="diseno">
+            <a href="" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse" data-bs-target="#diseno" aria-expanded="false" aria-controls="diseno" aria-label="sidebar-toggle">
                 <i class="lni lni-arrow-right-circle  sidebar-icon"></i>
                 <span>Diseño</span>
             </a>
@@ -23,8 +23,8 @@
                 </li>
                 <li class="sidebar-item">
                     <div class="sidebar-link d-flex justify-content-between">
-                        <a href="{% url 'design:designs' %}" class="sidebar-item-section">Diseños</a>
-                        <a href="{% url 'design:design_creation' %}" class="btn btn-outline-light sidebar-button"><i class="lni lni-plus"></i></a>
+                        <a href="{% url 'design:designs' %}" class="sidebar-item-section" aria-label="designs">Diseños</a>
+                        <a href="{% url 'design:design_creation' %}" class="btn btn-outline-light sidebar-button" aria-label="design-creation"><i class="lni lni-plus"></i></a>
                     </div>
                 </li>
             </ul>

@@ -9,14 +9,14 @@
     <div class="container">
         <form action="">
             <label for="searchCollection" class="form-label">
-                Search Collection
+                Buscar
             </label>
             <input type="text" name="searchCollection" id="searchCollection">
-            <button type="submit">Search</button>
+            <button type="submit" aria-label="search-button"><i class="lni lni-search-1"></i></button>
         </form>
     </div>
     {% if searchTerm %}
-        <p>Searching for: {{searchTerm}}</p>
+        <p>Buscando: {{searchTerm}}</p>
     {% endif %}
     <div class="collection-list">
         {% for collection in collections %}

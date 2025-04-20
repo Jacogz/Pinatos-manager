@@ -1,17 +1,16 @@
 {% extends 'partials/base.html' %}
 {% block title %}Design Creation Form{% endblock %}
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'design:designIndex' %}">Diseño</a></li>
-<li class="breadcrumb-item"><a href="{% url 'design:designs' %}">Diseños</a></li>
-<li class="breadcrumb-item"><a href="/design/collections/{{design.id}}">{{design.title}}</a></li>
-<li class="breadcrumb-item"><a href="">Editar</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'design:designIndex' %}">Diseño</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'design:designs' %}">Diseños</a></li>
+    <li class="breadcrumb-item"><a href="">Crear diseño</a></li>
 {% endblock %}
 {% block content %}
-    <h1>Editar diseño</h1>
+    <h1>Crea un diseño</h1>
     <form method="post" enctype="multipart/form-data" class="form collection-form">
         {% csrf_token %}
         {{form}}
-        <button type="submit" class="btn btn-primary">Actualizar</button> 
+        <button type="submit" class="btn btn-primary">Crear Diseño</button> 
         {% if errors %}
             <div class="alert alert-danger mt-3 errorbox">
                 <h4 class="alert-heading">Error</h4>

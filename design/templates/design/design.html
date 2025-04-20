@@ -1,9 +1,10 @@
 {% extends 'partials/base.html' %}
-{% block stylesheets %}
-{% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
-{% endblock %}
 {% block title %}{{design.title}}{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'design:designIndex' %}">Diseño</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'design:designs' %}">Diseños</a></li>
+    <li class="breadcrumb-item"><a href="">{{design.title}}</a></li>
+{% endblock %}
 {% block content %}
     <h1>{{design.title}}</h1>
     <p>{{design.reference}}</p><br>
@@ -12,7 +13,7 @@
     <p>{{design.created_at}}</p><br>
     <p>{{design.updated_at}}</p><br>
     <img src="{{design.image.url}}" alt="design image"><br>
-    <a href="/design/update/{{design.reference}}">Edit design</a><br>
-    <a href="/design/delete/{{design.reference}}">Delete design</a><br>
+    <a href="/design/update/{{design.id}}">Edit design</a><br>
+    <a href="/design/delete/{{design.id}}">Delete design</a><br>
     <a href="/design/designs">Back to designs</a>
 {% endblock %}
