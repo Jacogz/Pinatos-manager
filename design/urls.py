@@ -17,7 +17,7 @@ urlpatterns = [
     #Designs endpoints
     path('designs/', views.designs, name='designs'),
     path('designs/<int:design_id>', views.design, name='design'),
-    path('create', views.create_design, name='design_creation_processing'),
+    path('create', views.create_design, name='design_creation'),
     path('update/<int:design_id>', views.update_design, name='design_update_form'),
     path('delete/<int:design_id>', views.delete_design, name='design_deletion'),
 ]

@@ -1,0 +1,69 @@
+{% load static %}
+<aside id="sidebar">
+    <div class="d-flex">
+        <button id="toggle-btn" type="button">
+            <i class="lni lni-menu-hamburger-1"></i>
+        </button>
+        <div class="sidebar-logo">
+            <a href="{% url 'core:home' %}">ZIGZAG</a>
+        </div>
+    </div>
+    <ul class="sidebar-nav">
+        <li class="sidebar-item">
+            <a href="" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse" data-bs-target="#diseno" aria-expanded="false" aria-controls="diseno">
+                <i class="lni lni-arrow-right-circle  sidebar-icon"></i>
+                <span>Diseño</span>
+            </a>
+            <ul id="diseno" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <div class="sidebar-link d-flex justify-content-between">
+                        <a href="{% url 'design:collections' %}" class="sidebar-item-section">Colecciones</a>
+                        <a href="{% url 'design:collection_creation' %}" class="btn btn-outline-light sidebar-button"><i class="lni lni-plus"></i></a>
+                    </div>
+                </li>
+                <li class="sidebar-item">
+                    <div class="sidebar-link d-flex justify-content-between">
+                        <a href="{% url 'design:designs' %}" class="sidebar-item-section">Diseños</a>
+                        <a href="{% url 'design:design_creation' %}" class="btn btn-outline-light sidebar-button"><i class="lni lni-plus"></i></a>
+                    </div>
+                </li>
+            </ul>
+        </li>
+        <li class="sidebar-item">
+            <a href="" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse" data-bs-target="#produccion" aria-expanded="false" aria-controls="produccion">
+                <i class="lni lni-arrow-right-circle sidebar-icon"></i>
+                <span>Producción</span>
+            </a>
+            <ul id="produccion" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <div class="sidebar-link d-flex justify-content-between">
+                        <a href="{% url 'production:batches' %}" class="sidebar-item-section">Lotes</a>
+                        <a href="{% url 'production:batch_creation' %}" class="btn btn-outline-light sidebar-button"><i class="lni lni-plus"></i></a>
+                    </div>
+                </li>
+                <li class="sidebar-item">
+                    <div class="sidebar-link d-flex justify-content-between">
+                        <a href="{% url 'production:workshops' %}" class="sidebar-item-section">Talleres</a>
+                        <a href="{% url 'production:workshop_creation' %}" class="btn btn-outline-light sidebar-button"><i class="lni lni-plus"></i></a>
+                    </div>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <div class="sidebar-footer mt-auto">
+        <ul class="sidebar-nav">
+            <li class="sidebar-item">
+                <a href="/admin" class="sidebar-link">
+                    <i class="lni lni-user-4 sidebar-icon"></i>
+                    <span>Perfil</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="" class="sidebar-link">
+                    <i class="lni lni-exit sidebar-icon"></i>
+                    <span>Salir</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</aside>

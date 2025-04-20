@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class Collection(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
-    description = models.TextField(blank=False, null=False)
+    description = models.TextField(max_length=250, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True, null=False)
     updated_at = models.DateTimeField(auto_now=True, null=False)
 

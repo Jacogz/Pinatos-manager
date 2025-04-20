@@ -17,13 +17,45 @@
         <h1>{{design.title}}</h1>
         <p>{{design.collection}}</p><br>
         <p>{{design.description}}</p><br>
-        <div class="process-list">
-            <h2>Processes</h2>
-            <ul>
-                {% for process in processes %}
-                <li>{{process.description}}</li>
-                {% endfor %}
-            </ul>
+    </div>
+    <div>
+        <h2>assignments</h2>
+        <ul>
+            {% for assignment in assignments %}
+                <li>
+                    <div>
+                        <p>workshop_id: {{assignment.workshop.id}}</p><br>
+                        <p>expected_delivery: {{assignment.expected_delivery}}</p><br>
+                        <p>status: {{assignment.status}}</p><br>
+                        
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    {{processes.0.description}}
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'production:assign_batch' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="batch_id" value="{{batch.id}}">
+                        <input type="hidden" name="process_id" value="{{processes.0.id}}">
+                        <label for="workshop_id">
+                            Workshop ID:
+                            <input type="text" name="workshop_id" required>
+                        </label>
+                        <label for="expected_delivery">
+                            Expected Delivery:
+                            <input type="datetime-local" name="expected_delivery" required>
+                        </label>
+                        <button type="submit">Assign</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
     <a href="{% url 'production:batches' %}">Back to Batches</a>

@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Workshop, Batch, ProcessAssignment
 from .forms import workshopCreationForm, workshopUpdateForm, batchCreationForm
 from .services import productionService
 
@@ -50,7 +49,8 @@ def batch(request, batch_id): #FR-5: CRUD batches and assignment
     batch = ps.get_batch(batch_id)
     design = batch.design
     processes = batch.get_processes()
-    return render(request, 'production/batch.html', {'batch': batch, 'design': design, 'processes': processes})
+    assignments = ps.get_assignments(batch_id=batch)
+    return render(request, 'production/batch.html', {'batch': batch, 'design': design, 'processes': processes, 'assignments': assignments})
 
 def create_batch(request): #FR-5: CRUD batches and assignment
     if request.method == 'POST':
@@ -61,3 +61,12 @@ def create_batch(request): #FR-5: CRUD batches and assignment
     else:
         form = batchCreationForm()
     return render(request, 'production/batchCreationForm.html', {'form': form})
+
+#Assignment functionalities
+
+def assign_batch(request):
+    if request.method == 'POST':
+        form = request.POST
+        batch_id = form.__getitem__('batch_id')
+        ps.assign_batch(form)
+    return redirect(f'/production/batches/{batch_id}')

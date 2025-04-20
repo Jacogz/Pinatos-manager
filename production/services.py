@@ -1,5 +1,6 @@
 from .models import Workshop, Batch, ProcessAssignment
 from .forms import workshopCreationForm, workshopUpdateForm, batchCreationForm
+import datetime # Add to requirements.txt
 
 batch_status = ['pending', 'active', 'completed']
 assignment_status = ['unrevised', 'revised']
@@ -78,36 +79,39 @@ class productionService():
     def get_revised_assignments(self):
         return self.assignments.filter(status='revised')
 
-# Assign batch-workshop-process FR-5: Batch assignment
-    def assign_batch(self, batch_id, workshop_id, process_id, assignment_date, expected_delivery):
-        batch = self.batches.get(id=batch_id)
-        workshop = self.workshops.get(id=workshop_id)
-        process = batch.get_processes().get(id=process_id)
-        new_assignment = ProcessAssignment(batch=batch, workshop=workshop, process=process, assignment_date=assignment_date, expected_delivery=expected_delivery)
+# Assign batch-workshop-process
+    def assign_batch(self, form): # FR-5: Batch assignment
+        batch = self.get_batch(form.__getitem__('batch_id'))
+        workshop = self.get_workshop(form.__getitem__('workshop_id'))
+        process = batch.get_processes().get(id=form.__getitem__('process_id'))
+        expected_delivery = form.__getitem__('expected_delivery')
+        new_assignment = ProcessAssignment(batch=batch, workshop=workshop, process=process, assignment_date=datetime.datetime.now(), expected_delivery=expected_delivery)
         new_assignment.save()
         self.refresh('assignments')
         return new_assignment
     
 # Assignment return
-    def assigned_batch_reception(self, assignment_id):
-        assignment = self.assignments.get(id=assignment_id)
+    def assigned_batch_reception(self, assignment_id): # FR-8: Delivery registration
+        assignment = self.get_assignment(id=assignment_id)
+        assignment.delivery_date = datetime.datetime.now()
         assignment.status = 'unrevised'
         assignment.save()
         
 # Assignment revision
-    def assigned_batch_revision(self, assignment_id, delivery_date, delivered_units, observation):
+    def assigned_batch_revision(self, assignment_id, delivered_units, observation): # FR-9: Batch revision
         assignment = self.get_assignment(assignment_id)
         assignment.status = 'revised'
-        assignment.delivery_date = delivery_date
         assignment.delivered_units = delivered_units
         assignment.observation = observation
-        if assignment.expected_delivery < delivery_date:
+        if assignment.expected_delivery.date() < assignment.delivery_date.date():
             assignment.observation += " | Late delivery"
+        elif assignment.expected_delivery.date() < assignment.delivery_date.date():
+            assignment.observation += " | Early delivery"
         assignment.save()
         self.refresh('assignments')
     
 # Batch completion
-    def complete_batch(self, batch_id):
+    def complete_batch(self, batch_id): # FR-10: Batch completion (Pre-inventory)
         batch = self.get_batch(batch_id)
         batch.status = 'completed'
         batch.save()

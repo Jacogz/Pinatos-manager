@@ -1,9 +1,9 @@
 {% extends 'partials/base.html' %}
-{% block stylesheets %}
-{% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
-{% endblock %}
 {% block title %}Collections{% endblock %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'design:designIndex' %}">Diseño</a></li>
+<li class="breadcrumb-item"><a href="{% url 'design:collections' %}">Colecciones</a></li>
+{% endblock %}
 {% block content %}
     <h1>Collections</h1>
     <div class="container">

@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Collection, Design
-from .forms import collectionCreationForm, collectionUpdateForm, designCreationForm, designUpdateForm
+from .forms import collectionForm, designForm
+from .services import DesignService
 
 
 def index(request):
@@ -10,85 +11,102 @@ def index(request):
 #Collection functionalities
 def collections(request): #FR-3: CRUD designs and collections
     searchTerm = request.GET.get('searchCollection')
-    if searchTerm:
-        collections = Collection.objects.filter(name__contains=searchTerm)
-    else:
-        collections = Collection.objects.all()
-    return render(request, 'design/collections.html', {'searchTerm':searchTerm, 'collections': collections})
+    collections = DesignService.get_all_collections(searchTerm)
+    
+    context = {
+        'collections': collections,
+        'searchTerm': searchTerm
+    }
+    return render(request, 'design/collections.html', context)
 
 def collection(request, collection_id): #FR-3: CRUD designs and collections
-    collection = Collection.objects.get(id=collection_id)
-    designs = Design.objects.filter(collection=collection)
-    return render(request, 'design/collection.html', {'collection': collection, 'designs': designs})
+    result = DesignService.get_collection_by_id(collection_id)
+    if not result.success:
+        #print("DEBUG: collection result:", result)
+        return redirect('design:collections')
+    context = result.objects
+    collection_id = context['collection'].id
+    return render(request, 'design/collection.html', context=context )
 
 def create_collection(request): #FR-3: CRUD designs and collections
     if request.method == 'POST':
-        form = collectionCreationForm(request.POST or None)
-        if form.is_valid():
-            new_collection = form.save(commit=False)
-            new_collection.save()
-            return redirect(f'/design/collections/{new_collection.id}')
+        form_data = request.POST
+        #print("DEBUG: Form data:", form_data)
+        
+        result = DesignService.create_collection(form_data)
+        #print("DEBUG: create_collection Result:", result)
+        
+        if result.success:
+            return redirect('design:collection', collection_id=result.objects['collection'].id)
+        else:
+            form = collectionForm(form_data)
+            context = {
+                'form': form.translateLabels(),
+                'errors': result.errors.items()
+            }
+            #print("DEBUG: collectionForm errors:", context['form'].errors.items())
+            return render (request, 'design/collectionForm.html', context)
     else:
-        form = collectionCreationForm()
-    return render(request, 'design/collectionCreationForm.html', {'form': form})
+        form = collectionForm()
+        form.translateLabels()
+        context = {
+            'form': form
+        }
+        return render(request, 'design/collectionForm.html', context)
 
 def update_collection(request, collection_id): #FR-3: CRUD designs and collections
-    collection = Collection.objects.get(id=collection_id)
+    result = DesignService.get_collection_by_id(collection_id)
+    
+    if not result.success:
+        print("DEBUG: collection result:", result)
+        return redirect('design:collections')
+    
     if request.method == 'POST':
-        form = collectionUpdateForm(request.POST or None, instance=collection)
-        if form.is_valid():
-            collection = form.save(commit=False)
-            collection.save()
-            return redirect(f'/design/collections/{collection.id}')
+        form_data = request.POST
+        #print("DEBUG: Form data:", form_data)
+        result = DesignService.update_collection(result.objects['collection'], form_data)
+        #print("DEBUG: update_collection Result:", result)
+        
+        if result.success:
+            return redirect('design:collection', collection_id=result.objects['collection'].id)
+        else:
+            form = collectionForm(form_data)
+            form.translateLabels()
+            context = {
+                'form': form,
+                'errors': result.errors.items()
+            }
+            print("DEBUG: collectionForm errors:", context['form'].errors.items())
+            return render (request, 'design/collectionUpdateForm.html', context)
     else:
-        form = collectionUpdateForm(instance=collection)
-    return render(request, 'design/collectionUpdateForm.html', {'form': form})
+        collection = result.objects['collection']
+        form = collectionForm(instance=collection)
+        form.translateLabels()
+        context = {
+            'form': form,
+            'collection': collection
+        }
+        return render(request, 'design/collectionUpdateForm.html', context)
+        
+        
+        
 
 def delete_collection(request, collection_id): #FR-3: CRUD designs and collections
-    collection = Collection.objects.get(id=collection_id)
-    collection.delete()
-    HttpResponse("Collection deleted successfully")
-    return redirect('/design/collections')
+    return redirect('/')
 
 
 #Design functionalities
 def designs(request): #FR-3: CRUD designs and collections
-    searchTerm = request.GET.get('searchDesign')
-    if searchTerm:
-        designs = Design.objects.filter(title__contains=searchTerm)
-    else:
-        designs = Design.objects.all()
-    return render(request, 'design/designs.html', {'designs': designs})
+    return redirect('/')
 
 def design(request, design_id): #FR-3: CRUD designs and collections
-    design = Design.objects.get(id=design_id)
-    return render(request, 'design/design.html', {'design': design})
+    return redirect('/')
 
 def create_design(request): #FR-3: CRUD designs and collections
-    if request.method == 'POST':
-        form = designCreationForm(request.POST, request.FILES)
-        if form.is_valid():
-            new_design = form.save(commit=False)
-            new_design.save()
-            return redirect(f'/design/designs/{new_design.id}')
-    else:
-        form = designCreationForm()
-    return render(request, 'design/designCreationForm.html', {'form': form})
+    return redirect('/')
 
 def update_design(request, design_id): #FR-3: CRUD designs and collections
-    design = Design.objects.get(id=design_id)
-    if request.method == 'POST':
-        form = designUpdateForm(request.POST, request.FILES, instance=design)
-        if form.is_valid():
-            new_design = form.save(commit=False)
-            new_design.save()
-            return redirect(f'/design/designs/{new_design.id}')
-    else:
-        form = designUpdateForm(instance=design)
-    return render(request, 'design/designUpdateForm.html', {'form': form})
+    return redirect('/')
 
 def delete_design(request, design_id): #FR-3: CRUD designs and collections
-    design = Design.objects.get(id=design_id)
-    design.delete()
-    HttpResponse("Design deleted successfully")
-    return redirect('/design/designs')
+    return redirect('/')
