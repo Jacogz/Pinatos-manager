@@ -56,7 +56,7 @@ class designForm(forms.ModelForm):
         model = Design
         fields = ['collection', 'title', 'description', 'image', 'technical_sheet']
         widgets = {
-            'collection': forms.Select(attrs={'class': 'form-control design-form-input', 'placeholder':'Seleccionte la colección'}),
+            'collection': forms.Select(attrs={'class': 'form-control design-form-input', 'placeholder':'Seleccione la colección'}),
             'title': forms.TextInput(attrs={'class': 'form-control design-form-input', 'placeholder':'Título del diseño'}),
             'description': forms.TextInput(attrs={'class': 'form-control design-form-input', 'placeholder':'Qué es esta pieza?'}),
             'image': forms.FileInput(attrs={'class': 'form-control design-form-input', 'placeholder':'Imagen del diseño'}),

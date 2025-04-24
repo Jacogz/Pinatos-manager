@@ -9,14 +9,19 @@ class Batch(models.Model):
     status = models.CharField(max_length=20, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
     
     def get_processes(self):
         design_processes= self.design.processes.all()
         processes = design_processes.order_by("hierarchy")
         return processes
+    
+    def is_active(self):
+        return self.status == 'active'
+    def is_pending(self):
+        return self.status == 'pending'
+    def is_completed(self):
+        return self.status == 'completed'
+    
             
         
 

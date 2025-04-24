@@ -1,63 +1,107 @@
 {% extends 'partials/base.html' %}
-{% block stylesheets %}
-{% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
+{% block title %}Batch detail{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'production:productionIndex' %}">Producción</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'production:batches' %}">Lotes</a></li>
+    <li class="breadcrumb-item"><a href="/production/batches/{{batch.id}}">{{batch.id}}</a></li>
 {% endblock %}
-{% block title %}Batch: {{batch.id}}{% endblock %}
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <h2>ID: {{batch.id}}</h2>
-            <p>Initial quantity: {{batch.initial_quantity}}</p>
-            <p>Status: {{batch.status}}</p>
+<div class="container" id="batch-container">
+    <div id="batch-header">
+        <h1 id="batch-detail-title">Lote: #{{batch.id}}</h1>
+        <h2><span class="badge bg-primary" id="batch-status-badge">{{batch.status}}</span></h2>
+        <h4 class="text-muted" id="batch-creation-date">{{batch.created_at}}</h4>
+    </div>
+    <div class="batch-info">
+        <div class="batch-info-item col-4">
+            <a href="/design/designs/{{batch.design.id}}"><h5 class="mb-3">Diseño</h5></a>
+        </div>
+        <div class="batch-info-item col-4">
+            <h5 class="m-0">Cantidad inicial:    </h5>
+            <p>{{batch.initial_quantity}}</p>
+        </div>
+        <div class="batch-info-item col-lg-6 col-md-12 col-sm-12">
+            <h5 class="m-0">Procesos:     </h5>
+            <nav style="--bs-breadcrumb-divider: '->';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    {% for item in processes %}
+                        <li class="breadcrumb-item">{{item.process}}</li>
+                    {% endfor %}
+                </ol>
+            </nav>
         </div>
     </div>
-    <div class="col-md-6">
-        <h1>{{design.title}}</h1>
-        <p>{{design.collection}}</p><br>
-        <p>{{design.description}}</p><br>
-    </div>
-    <div>
-        <h2>assignments</h2>
-        <ul>
-            {% for assignment in assignments %}
-                <li>
-                    <div>
-                        <p>workshop_id: {{assignment.workshop.id}}</p><br>
-                        <p>expected_delivery: {{assignment.expected_delivery}}</p><br>
-                        <p>status: {{assignment.status}}</p><br>
+    <div class="card mb-4">
+        <div class="card-header">
+            Procesos de Producción
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Proceso</th>
+                        <th>Taller</th>
+                        <th>Estado</th>
+                        <th>Fecha Entrega</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in processes %}
+                    <tr class="{% if item.assignment and item.assignment.status == 'active' %}table-primary{% endif %}">
+                        <td>{{ item.process }}</td>
                         
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    {{processes.0.description}}
-                </div>
-                <div class="card-body">
-                    <form action="{% url 'production:assign_batch' %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="batch_id" value="{{batch.id}}">
-                        <input type="hidden" name="process_id" value="{{processes.0.id}}">
-                        <label for="workshop_id">
-                            Workshop ID:
-                            <input type="text" name="workshop_id" required>
-                        </label>
-                        <label for="expected_delivery">
-                            Expected Delivery:
-                            <input type="datetime-local" name="expected_delivery" required>
-                        </label>
-                        <button type="submit">Assign</button>
-                    </form>
-                </div>
-            </div>
+                        {% if item.is_assigned %}
+                            <td>{{ item.assignment.workshop.name }}</td>
+                            <td>{{ item.assignment.status }}</td>
+                            <td>{{ item.assignment.expected_delivery|date:"d/m/Y H:i" }}</td>
+                        {% else %}
+                            <td colspan="3">
+                                <form method="post" action="{% url 'production:assign_batch' batch.id item.process.id%}" 
+                                    class="row g-2">
+                                    {% csrf_token %}
+                                    <div class="col-md-5">
+                                        <select name="workshop" class="form-select" required>
+                                            <option value="">Seleccionar taller</option>
+                                            {% for workshop in workshops %}
+                                            <option value="{{ workshop.id }}">{{ workshop.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="datetime-local" name="expected_delivery" 
+                                            class="form-control" required>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-sm btn-success">
+                                            Asignar
+                                        </button>
+                                    </div>
+                                </form>
+                            </td>
+                        {% endif %}
+                        <td>
+                            {% if item.assignment.status == 'active' %}
+                            <div class="col-md-5">
+                                <a href="{% url 'production:assignment_mark_recieved' item.assignment.id%}" class="btn btn-primary text-light">Recibir</a>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-    <a href="{% url 'production:batches' %}">Back to Batches</a>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const batchContainer = document.getElementById('batch-container');
+        const batchHeader = document.getElementById('batch-header');
+        const batchDetailTitle = document.getElementById('batch-detail-title');
+        const batchStatusBadge = document.getElementById('batch-status-badge');
+        const batchCreationDate = document.getElementById('batch-creation-date');
+
+
+    });
+</script>
 {% endblock %}

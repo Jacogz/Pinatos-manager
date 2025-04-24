@@ -40,8 +40,9 @@ def create_collection(request): #FR-3: CRUD designs and collections
             return redirect('design:collection', collection_id=result.objects['collection'].id)
         else:
             form = collectionForm(form_data)
+            form.translateLabels()
             context = {
-                'form': form.translateLabels(),
+                'form': form,
                 'errors': result.errors.items()
             }
             #print("DEBUG: collectionForm errors:", context['form'].errors.items())
