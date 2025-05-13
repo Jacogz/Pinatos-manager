@@ -92,14 +92,15 @@ def update_workshop(request, workshop_id):
         return render(request, 'production/workshopUpdateForm.html', context)
 
 def batches(request):
-    result = ProductionService.get_all_batches()
-    if not result.success:
+    active = ProductionService.get_active_batches()
+    completed = ProductionService.get_completed_batches()
+    if not active.success or not completed.success:
         #print(DEBUG: batches result: result)
         return redirect('production:index')
     
-    batches = result.objects['batches']
     context = {
-        'batches': batches,
+        'active_batches': active.objects['batches'],
+        'historical_batches': completed.objects['batches'],
     }
     return render(request, 'production/batches.html', context)
 
@@ -115,6 +116,7 @@ def batch(request, batch_id):
         'processes': result.objects['processes'],
         'workshops': result.objects['workshops'],
     }
+    
     return render(request, 'production/batch.html', context)
 
 def create_batch(request):
@@ -154,6 +156,15 @@ def assign_batch(request, batch_id, process_id):
 def assignment_mark_recieved(request, assignment_id):
     result = ProductionService.assignment_mark_recieved(assignment_id)
     print('DEBUG: assignment_mark_recieved result:', result)
+    
+    if not result.success:
+        return redirect('production:productionIndex')
+    
+    return redirect('production:batch', batch_id=result.objects['batch'].id)
+
+def assignment_mark_revised(request, assignment_id):
+    result = ProductionService.assignment_mark_revised(assignment_id, request.POST)
+    print('DEBUG: assignment_mark_revised result:', result)
     
     if not result.success:
         return redirect('production:productionIndex')

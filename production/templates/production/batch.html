@@ -9,7 +9,11 @@
 <div class="container" id="batch-container">
     <div id="batch-header">
         <h1 id="batch-detail-title">Lote: #{{batch.id}}</h1>
-        <h2><span class="badge bg-primary" id="batch-status-badge">{{batch.status}}</span></h2>
+        <h2><span class="badge 
+            {% if batch.status == 'pending' %}bg-warning{% endif %}
+            {% if batch.status == 'active' %}bg-primary{% endif %}
+            {% if batch.status == 'completed' %}bg-success{% endif %}
+            " id="batch-status-badge">{{batch.status}}</span></h2>
         <h4 class="text-muted" id="batch-creation-date">{{batch.created_at}}</h4>
     </div>
     <div class="batch-info">
@@ -20,6 +24,12 @@
             <h5 class="m-0">Cantidad inicial:    </h5>
             <p>{{batch.initial_quantity}}</p>
         </div>
+        {% if batch.status == 'completed' %}
+            <div class="batch-info-item col-4">
+                <h5 class="m-0">Cantidad final:    </h5>
+                <p>{{batch.final_quantity}}</p>
+            </div>
+        {% endif %}
         <div class="batch-info-item col-lg-6 col-md-12 col-sm-12">
             <h5 class="m-0">Procesos:     </h5>
             <nav style="--bs-breadcrumb-divider: '->';" aria-label="breadcrumb">
@@ -85,8 +95,46 @@
                                 <a href="{% url 'production:assignment_mark_recieved' item.assignment.id%}" class="btn btn-primary text-light">Recibir</a>
                             </div>
                             {% endif %}
+                            {% if item.assignment.status == 'unrevised' %}
+                            <div class="col-md-5">
+                                <!-- Button to trigger modal -->
+                                <a href="#" class="btn btn-primary text-light" data-bs-toggle="modal" data-bs-target="#revisionModal{{ item.assignment.id }}">Revisar</a>
+                            </div>
+                            {% endif %}
                         </td>
                     </tr>
+                    <!-- Modal -->
+                    <div class="modal fade" id="revisionModal{{ item.assignment.id }}" tabindex="-1" aria-labelledby="revisionModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <form method="post" action="
+                            {% if item.assignment %}
+                            {% url 'production:assignment_mark_revised' item.assignment.id %}
+                            {% endif %}
+                            ">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="revisionModalLabel">Revisar Asignación</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <div class="mb-3">
+                                <label for="delivered_units" class="form-label">Unidades Entregadas</label>
+                                <input type="number" name="delivered_units" class="form-control" required>
+                              </div>
+                              <div class="mb-3">
+                                <label for="observation" class="form-label">Observación</label>
+                                <textarea name="observation" class="form-control" rows="3" required></textarea>
+                              </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                              <button type="submit" class="btn btn-primary">Guardar</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
                     {% endfor %}
                 </tbody>
             </table>

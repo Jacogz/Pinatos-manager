@@ -21,5 +21,5 @@ urlpatterns = [
     #Assignment endpoints
     path('batches/<int:batch_id>/assign/<int:process_id>/', views.assign_batch, name='assign_batch'),
     path('assignments/recieved/<int:assignment_id>/', views.assignment_mark_recieved, name='assignment_mark_recieved'),
-    
+    path('assignments/revised/<int:assignment_id>/', views.assignment_mark_revised, name='assignment_mark_revised'),
 ]

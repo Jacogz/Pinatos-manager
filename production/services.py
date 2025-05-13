@@ -85,6 +85,30 @@ class ProductionService:
         return result
     
     @staticmethod
+    def get_active_batches():
+        # FR-21: Batch Status Visualization
+        try:
+            batches = Batch.objects.filter(status__in=['active', 'pending'])
+            result = ProcessResult(success=True, objects={'batches': batches})
+            
+        except Exception as e:
+            result = ProcessResult(success=False, errors={'errors': str(e)})
+            
+        return result
+    
+    @staticmethod
+    def get_completed_batches():
+        # FR-21: Batch Status Visualization
+        try:
+            batches = Batch.objects.filter(status='completed')
+            result = ProcessResult(success=True, objects={'batches': batches})
+            
+        except Exception as e:
+            result = ProcessResult(success=False, errors={'errors': str(e)})
+            
+        return result
+    
+    @staticmethod
     def get_batch_by_id(batch_id):
         # FR-21: Batch Status Visualization
         try:
@@ -143,7 +167,7 @@ class ProductionService:
             return ProcessResult(success=False, errors={'errors': str(e)})
     
     @staticmethod
-    def assignment_mark_reviewed(assignment_id, form_data):
+    def assignment_mark_revised(assignment_id, form_data):
         #FR-9: Assignment status update: revised/completed
         assignment = ProcessAssignment.objects.get(id=assignment_id)
         
@@ -159,16 +183,19 @@ class ProductionService:
             # Update batch status if all processes are complete
             if not ProcessAssignment.objects.filter(batch=assignment.batch, status__in=['active', 'delivered']).exists():
                 assignment.batch.status = 'completed'
+                assignment.batch.final_quantity = assignment.delivered_units
                 assignment.batch.save()
             
-        return ProcessResult(success=True, objects={'assignment': assignment})
+            return ProcessResult(success=True, objects={'assignment': assignment, 'batch': assignment.batch})
+        else:
+            return ProcessResult(success=False, errors=form.errors)
     
     @staticmethod
     def assign_batch(form_data, batch_id, process_id):
         #FR-5: Batch assignment
         try:
             form = ProcessAssignmentForm(form_data)
-            print("DEBUG: assign_batch form data:", form.is_valid())
+            #print("DEBUG: assign_batch form data:", form.is_valid())
             if not form.is_valid():
                 return ProcessResult(success=False, errors=form.errors)
             batch = Batch.objects.get(id=batch_id)
@@ -184,6 +211,10 @@ class ProductionService:
                 expected_delivery=expected_delivery
             )
             new_assignment.save()
+            
+            if batch.status == 'pending':
+                batch.status = 'active'
+                batch.save()
             
             return ProcessResult(success=True, objects={'assignment': new_assignment})
         

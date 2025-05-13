@@ -154,6 +154,16 @@ class assignmentRevisionForm(forms.ModelForm):
         labels = {
             'delivered_units': 'Unidades entregadas'
         }
+        
+    def clean_delivered_units(self):
+        delivered_units = self.cleaned_data.get('delivered_units')
+        if delivered_units < 0:
+            raise forms.ValidationError("Las unidades entregadas no pueden ser negativas.")
+        if delivered_units > self.instance.batch.initial_quantity:
+            raise forms.ValidationError("Las unidades entregadas no pueden ser mayores a la cantidad inicial.")
+        return delivered_units
+    
+    
     def save(self, commit=True):
         process_assignment = self.instance
         process_assignment.delivered_units = self.cleaned_data['delivered_units']

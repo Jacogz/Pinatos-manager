@@ -1,25 +1,76 @@
 {% extends 'partials/base.html' %}
 {% block stylesheets %}
 {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
+<link rel="stylesheet" type="text/css" href="{% static 'design/design.css' %}">
 {% endblock %}
 {% block title %}Batches{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'production:productionIndex' %}">Producción</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'production:batches' %}">Lotes</a></li>
+{% endblock %}
 {% block content %}
 <div class="container">
-    <h1>Batches</h1>
-    <a href="{% url 'production:batch_creation' %}">Create Batch</a>
-    <div class="design-list container">
-        {% for batch in batches %}
-        <div class="row">
-            <div class="collection col-md-6">
-                <h2>ID: {{batch.id}}</h2>
-                <p>Initial quantity: {{batch.initial_quantity}}</p>
-                <p>Status: {{batch.status}}</p>
-            </div>
-            <a href="{% url 'production:batch' batch.id %}">View Batch</a>
-        </div>
-        {% endfor %}
-    </div>
-    <a href="{% url 'production:productionIndex' %}">Back to production index</a>
+    <!-- Section 1: Active Batches -->
+    <h2>Lotes activos</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Creado el</th>
+                <th>Asignacion actual</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if active_batches %}
+                {% for batch in active_batches %}
+                    <tr>
+                        <td><a href="{% url 'production:batch' batch.id %}">{{ batch.id }}</a></td>
+                        <td>{{ batch.created_at|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% with batch.processassignment_set.latest as assignment %}
+                            {% if assignment %}
+                            {{ assignment.process.description }}
+                            {% else %}
+                            No hay asignación
+                            {% endif %}
+                            {% endwith %}
+                        </td>
+                        <td>{{ batch.status }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">
+                        No hay lotes activos
+                        <a href="{% url 'production:batch_creation' %}" class="btn btn-sm btn-primary ms-3">Crear nuevo lote</a>
+                    </td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    
+    <!-- Section 2: Historical Batches -->
+    <h2>Histórico</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Creado el</th>
+                <th>Unidades finales</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for batch in historical_batches %}
+            <tr>
+                <td><a href="{% url 'production:batch' batch.id %}">{{ batch.id }}</a></td>
+                <td>{{ batch.created_at|date:"d/m/Y H:i" }}</td>
+                <td>{{ batch.final_quantity }}</td>
+                <td>{{ batch.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

@@ -6,7 +6,8 @@ from design.models import Design, Process
 class Batch(models.Model):
     design = models.ForeignKey(Design, on_delete=models.CASCADE, blank=False)
     initial_quantity = models.IntegerField(null=False, blank=False)
-    status = models.CharField(max_length=20, blank=False, null=False)
+    final_quantity = models.IntegerField(null=True)
+    status = models.CharField(max_length=20, blank=True, null=False, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -45,3 +46,6 @@ class ProcessAssignment(models.Model):
     delivery_date = models.DateTimeField(null=True)
     delivered_units = models.IntegerField(null=True)
     observation = models.TextField(null=True)
+    
+    class Meta:
+        get_latest_by = 'delivery_date'
