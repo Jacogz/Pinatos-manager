@@ -125,6 +125,11 @@ class batchCreationForm(forms.ModelForm):
     class Meta:
         model = Batch
         fields = ['design', 'initial_quantity', 'status']
+    
+    def translateLabels(self):
+        self.fields['design'].label = 'Diseño'
+        self.fields['initial_quantity'].label = 'Cantidad inicial'
+        self.fields['status'].label = 'Estado'
 
 class ProcessAssignmentForm(forms.ModelForm):
     class Meta:

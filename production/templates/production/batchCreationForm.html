@@ -1,15 +1,27 @@
 {% extends 'partials/base.html' %}
-{% block stylesheets %}
-{% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
+{% block title %}Workshop Creation Form{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'production:productionIndex' %}">Producción</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'production:batches' %}">Lotes</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'production:batch_creation' %}">Crear Lotes</a></li>
 {% endblock %}
-{% block title %}Batch Creation Form{% endblock %}
 {% block content %}
-    <h1>Create Design</h1>
-    <form method="post" enctype="multipart/form-data" >
+    <h1>Nuevo Lote</h1>
+    <form method="post" enctype="multipart/form-data" class="form batch-form">
         {% csrf_token %}
         {{form}}
-        <button type="submit">Create Batch</button> 
-        <label for="workshop_id"></label>
+        <button type="submit" class="btn btn-primary">Crear Lote</button> 
+        {% if errors %}
+            <div class="alert alert-danger mt-3 errorbox">
+                <h4 class="alert-heading">Error</h4>
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{error}}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
     </form>
 {% endblock %}

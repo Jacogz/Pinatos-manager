@@ -92,7 +92,16 @@ def update_workshop(request, workshop_id):
         return render(request, 'production/workshopUpdateForm.html', context)
 
 def batches(request):
-    return redirect('production:index')
+    result = ProductionService.get_all_batches()
+    if not result.success:
+        #print(DEBUG: batches result: result)
+        return redirect('production:index')
+    
+    batches = result.objects['batches']
+    context = {
+        'batches': batches,
+    }
+    return render(request, 'production/batches.html', context)
 
 def batch(request, batch_id):
     result = ProductionService.get_batch_by_id(batch_id)
@@ -109,7 +118,28 @@ def batch(request, batch_id):
     return render(request, 'production/batch.html', context)
 
 def create_batch(request):
-    return redirect('production:index')
+    if request.method == 'POST':
+        
+        result = ProductionService.create_batch(request.POST)
+        
+        #print('DEBUG: create_batch result:', result)
+        if result.success:
+            return redirect('production:batches')
+        else:
+            form = batchCreationForm(request.POST)
+            form.translateLabels()
+            context = {
+                'form': form,
+                'errors': result.errors
+            }
+            return render(request, 'production/batchCreatuibForm.html', context)
+    else:
+        form = batchCreationForm()
+    
+    context = {
+        'form': form,
+    }
+    return render(request, 'production/batchCreationForm.html', context)
 
 def assign_batch(request, batch_id, process_id):
     if request.method == 'POST':

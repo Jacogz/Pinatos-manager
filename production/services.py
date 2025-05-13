@@ -73,6 +73,18 @@ class ProductionService:
             return ProcessResult(success=False, errors=str(e))
     
     @staticmethod
+    def get_all_batches():
+        # FR-21: Batch Status Visualization
+        try:
+            batches = Batch.objects.all()
+            result = ProcessResult(success=True, objects={'batches': batches})
+            
+        except Exception as e:
+            result = ProcessResult(success=False, errors={'errors': str(e)})
+            
+        return result
+    
+    @staticmethod
     def get_batch_by_id(batch_id):
         # FR-21: Batch Status Visualization
         try:
@@ -93,6 +105,21 @@ class ProductionService:
         except Batch.DoesNotExist:
             result = ProcessResult(success=False, errors="Lote no encontrado id:{batch_id}")
             
+        except Exception as e:
+            result = ProcessResult(success=False, errors={'errors': str(e)})
+            
+        return result
+    
+    @staticmethod
+    def create_batch(form_data):
+        # FR-21: Batch Status Visualization
+        try:
+            form = batchCreationForm(form_data)
+            if form.is_valid():
+                batch = form.save()
+                result = ProcessResult(success=True, objects={'batch': batch})
+            else:
+                result = ProcessResult(success=False, errors=form.errors)
         except Exception as e:
             result = ProcessResult(success=False, errors={'errors': str(e)})
             

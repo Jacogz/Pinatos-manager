@@ -152,7 +152,8 @@ body {
 
 .collection-form,
 .design-form,
-.workshop-form {
+.workshop-form,
+.batch-form {
     display: flex;
     flex-direction: column;
     padding: 2rem;
@@ -165,7 +166,8 @@ body {
 
 .collection-form label,
 .design-form label,
-.workshop-form label{
+.workshop-form label,
+.batch-form label{
     font-size: 1rem;
     font-weight: bold;
     align-self: flex-start;
@@ -175,8 +177,14 @@ body {
 
 .collection-form input,
 .design-form input,
-.workshop-form input {
+.workshop-form input,
+.batch-form input,
+.batch-form select {
     margin-bottom: 1rem;
+}
+
+.batch-form select {
+    max-width: 100%;
 }
 
 /*Form error styles*/
