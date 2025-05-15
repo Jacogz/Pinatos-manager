@@ -1,19 +1,31 @@
 {% extends 'partials/base.html' %}
-{% block title %}{{design.title}}{% endblock %}
+{% block title %}{{ design.title }}{% endblock %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'design:designIndex' %}">Diseño</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'design:designs' %}">Diseños</a></li>
-    <li class="breadcrumb-item"><a href="">{{design.title}}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'design:designIndex' %}">Diseño</a></li>
+<li class="breadcrumb-item"><a href="{% url 'design:designs' %}">Diseños</a></li>
+<li class="breadcrumb-item active">{{ design.title }}</li>
 {% endblock %}
 {% block content %}
-    <h1>{{design.title}}</h1>
-    <p>{{design.reference}}</p><br>
-    <p>{{design.collection}}</p><br>
-    <p>{{design.description}}</p><br>
-    <p>{{design.created_at}}</p><br>
-    <p>{{design.updated_at}}</p><br>
-    <img src="{{design.image.url}}" alt="design image"><br>
-    <a href="/design/update/{{design.id}}">Edit design</a><br>
-    <a href="/design/delete/{{design.id}}">Delete design</a><br>
-    <a href="/design/designs">Back to designs</a>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>{{ design.title }}</h1>
+        <div>
+            <a href="{% url 'design:design_update_form' design.id %}" class="btn btn-warning me-2">Editar</a>
+            <a href="{% url 'design:design_deletion' design.id %}" class="btn btn-danger">Eliminar</a>
+        </div>
+    </div>
+    <p><strong>Colección:</strong> <a href="{% url 'design:collection' design.collection.id %}">{{ design.collection.name }}</a></p>
+    <p><strong>Descripción:</strong> {{ design.description|default:"Sin descripción" }}</p>
+    <p><strong>Creado el:</strong> {{ design.created_at|date:"d/m/Y" }}</p>
+    <p><strong>Actualizado el:</strong> {{ design.updated_at|date:"d/m/Y" }}</p>
+    {% if design.image %}
+    <div class="mb-3">
+        <img src="{{ design.image.url }}" alt="Imagen de {{ design.title }}" class="img-fluid">
+    </div>
+    {% endif %}
+    {% if design.technical_sheet %}
+    <p><strong>Ficha técnica:</strong> <a href="{{ design.technical_sheet.url }}" target="_blank">Descargar</a></p>
+    {% endif %}
+    <a href="{% url 'design:designs' %}" class="btn btn-secondary mt-4">Volver a diseños</a>
+</div>
 {% endblock %}

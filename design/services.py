@@ -13,9 +13,18 @@ class DesignService:
     def get_all_designs(search_term=None):
         # FR-3: CRUD designs and collections (Updated to use service)
         if search_term:
-            return Design.objects.filter(title__contains=search_term)
+            designs = Design.objects.filter(name__contains=search_term)
         else:
-            return Design.objects.all()
+            designs = Design.objects.all()
+        
+        collections_dict = {}
+        for design in designs:
+            collection = design.collection
+            if collection not in collections_dict:
+                collections_dict[collection] = []
+            collections_dict[collection].append(design)
+        
+        return collections_dict
         
     @staticmethod
     def get_all_collections(search_term=None):

@@ -1,30 +1,43 @@
 {% extends 'partials/base.html' %}
-{% block title %}Designs{% endblock %}
+{% block title %}Diseños{% endblock %}
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'design:designIndex' %}">Diseño</a></li>
-<li class="breadcrumb-item"><a href="{% url 'design:designs' %}">Diseños</a></li>
+<li class="breadcrumb-item active">Diseños</li>
 {% endblock %}
 {% block content %}
-    <h1>Diseños</h1>
-    <div class="container">
-        <form action="">
-            <label for="searchDesign" class="form-label">
-                Buscar
-            </label>
-            <input type="text" name="searchDesign" id="searchDesign">
-            <button type="submit" aria-label="search-button"><i class="lni lni-search-1"></i></button>
-        </form>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Diseños</h1>
+        <a href="{% url 'design:design_creation' %}" class="btn btn-primary">Crear diseño</a>
     </div>
-    {% if searchTerm %}
-        <p>Buscando: {{searchTerm}}</p>
-    {% endif %}
-    <div class="design-list">
-        {% for design in designs %}
-            <div class="collection">
-                <h2>{{design.title}}</h2>
-                <p>{{design.description}}</p>
-                <a href="/design/designs/{{design.id}}">View Design</a>
+    <form method="get" class="mb-4">
+        <input type="text" name="searchDesign" placeholder="Buscar diseño..." value="{{ searchTerm|default:'' }}" class="form-control w-25 d-inline-block">
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+    </form>
+    {% if collections_dict %}
+        {% for collection, designs in collections_dict.items %}
+            <h3 class="mt-4">
+                <a href="{% url 'design:collection' collection.id %}">{{ collection.name }}</a>
+            </h3>
+            <div class="row">
+                {% for design in designs %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if design.image %}
+                        <img src="{{ design.image.url }}" class="card-img-top" alt="{{ design.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ design.title }}</h5>
+                            <p class="card-text">{{ design.description|default:"Sin descripción" }}</p>
+                            <a href="{% url 'design:design' design.id %}" class="btn btn-outline-primary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         {% endfor %}
-    </div>
+    {% else %}
+        <p>No hay diseños registrados.</p>
+    {% endif %}
+</div>
 {% endblock %}

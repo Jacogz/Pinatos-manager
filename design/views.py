@@ -106,10 +106,10 @@ def delete_collection(request, collection_id): #FR-3: CRUD designs and collectio
 #Design functionalities
 def designs(request): #FR-3: CRUD designs and collections
     searchTerm = request.GET.get('searchDesign')
-    designs = DesignService.get_all_designs(searchTerm)
+    collections_dict = DesignService.get_all_designs(searchTerm)
     
     context = {
-        'designs': designs,
+        'collections_dict': collections_dict,
         'searchTerm': searchTerm
     }
     
