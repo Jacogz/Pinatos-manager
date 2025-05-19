@@ -1,4 +1,3 @@
-```markdown
 # Pinatos Manager
 Software development project, solution for a textile company aimed to help them coordinate and optimize their activities. Mainly developed in Python with Django.
 
@@ -56,4 +55,3 @@ http://127.0.0.1:8000/
 
 - Make sure you have Python 3.8 or higher installed.
 - For file uploads and static files, ensure the `media` and `static` directories exist and are writable.
-```
