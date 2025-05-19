@@ -23,29 +23,26 @@
         </thead>
         <tbody>
             {% if active_batches %}
-                {% for batch in active_batches %}
+                {% for item in active_batches %}
                     <tr>
-                        <td><a href="{% url 'production:batch' batch.id %}">{{ batch.id }}</a></td>
-                        <td>{{ batch.created_at|date:"d/m/Y H:i" }}</td>
+                        <td><a href="{% url 'production:batch' item.batch.id %}">{{ item.batch.id }}</a></td>
+                        <td>{{ item.batch.created_at|date:"d/m/Y H:i" }}</td>
                         <td>
-                            {% with batch.processassignment_set.latest as assignment %}
-                            {% if assignment %}
-                            {{ assignment.process.description }}
+                            {% if item.active_assignment %}
+                            {{ item.active_assignment }}
                             {% else %}
                             No hay asignación
                             {% endif %}
-                            {% endwith %}
                         </td>
-                        <td>{{ batch.status }}</td>
+                        <td>{{ item.batch.status }}</td>
                     </tr>
-                {% endfor %}
+                    {% endfor %}
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            <a href="{% url 'production:batch_creation' %}" class="btn btn-sm btn-primary ms-3">Crear nuevo lote</a>
+                        </td>
+                    </tr>
             {% else %}
-                <tr>
-                    <td colspan="4" class="text-center">
-                        No hay lotes activos
-                        <a href="{% url 'production:batch_creation' %}" class="btn btn-sm btn-primary ms-3">Crear nuevo lote</a>
-                    </td>
-                </tr>
             {% endif %}
         </tbody>
     </table>

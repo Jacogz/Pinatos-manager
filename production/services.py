@@ -31,7 +31,14 @@ class ProductionService:
         # FR-7: CRUD Workshops (Service outsourced)
         try:
             workshop = Workshop.objects.get(id=workshop_id)
-            result = ProcessResult(success=True, objects={'workshop': workshop})
+            assignments = ProcessAssignment.objects.filter(workshop=workshop)
+            
+            active_assignments = assignments.filter(status='active')
+            unrevised_assignments = assignments.filter(status='unrevised')
+            revised_assignments = assignments.filter(status='revised')
+            
+            
+            result = ProcessResult(success=True, objects={'workshop': workshop, 'active_assignments': active_assignments, 'unrevised_assignments': unrevised_assignments, 'revised_assignments': revised_assignments})
             
         except Workshop.DoesNotExist:
             result = ProcessResult(success=False, errors="Taller no encontrado id:{workshop_id}")
@@ -88,7 +95,15 @@ class ProductionService:
     def get_active_batches():
         # FR-21: Batch Status Visualization
         try:
-            batches = Batch.objects.filter(status__in=['active', 'pending'])
+            active_batches = Batch.objects.filter(status__in=['active', 'pending'])
+            batches = [
+                {
+                    'batch': batch,
+                    'active_assignment': batch.get_active_assignment()
+                }
+                for batch in active_batches
+            ]
+
             result = ProcessResult(success=True, objects={'batches': batches})
             
         except Exception as e:
@@ -113,16 +128,7 @@ class ProductionService:
         # FR-21: Batch Status Visualization
         try:
             batch = Batch.objects.get(id=batch_id)
-            assignments = ProcessAssignment.objects.filter(batch=batch)
-            all_processes = batch.get_processes()
-            processes = []
-            for process in all_processes:
-                assignment = assignments.filter(process=process).first()
-                processes.append({
-                    'process': process,
-                    'assignment': assignment,
-                    'is_assigned': assignment is not None
-                })
+            processes = batch.get_processes()
             workshops = Workshop.objects.all()
             result = ProcessResult(success=True, objects={'batch': batch, 'processes': processes, 'workshops': workshops})
             
@@ -181,7 +187,8 @@ class ProductionService:
             assignment.save()
             
             # Update batch status if all processes are complete
-            if not ProcessAssignment.objects.filter(batch=assignment.batch, status__in=['active', 'delivered']).exists():
+            batch = assignment.batch
+            if batch.is_completed():
                 assignment.batch.status = 'completed'
                 assignment.batch.final_quantity = assignment.delivered_units
                 assignment.batch.save()
@@ -199,7 +206,7 @@ class ProductionService:
             if not form.is_valid():
                 return ProcessResult(success=False, errors=form.errors)
             batch = Batch.objects.get(id=batch_id)
-            process = batch.get_processes().get(id=process_id)
+            process = batch.design.processes.get(id=process_id)
             workshop = form.cleaned_data['workshop']
             expected_delivery = form_data['expected_delivery']
             

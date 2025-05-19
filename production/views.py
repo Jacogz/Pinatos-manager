@@ -26,9 +26,11 @@ def workshop(request, workshop_id):
         #print(DEBUG: workshop result: result)
         return redirect('production:index')
     
-    workshop = result.objects['workshop']
     context = {
-        'workshop': workshop,
+        'workshop': result.objects['workshop'],
+        'active_assignments': result.objects['active_assignments'],
+        'unrevised_assignments': result.objects['unrevised_assignments'],
+        'revised_assignments': result.objects['revised_assignments']
     }
     return render(request, 'production/workshop.html', context)
 
@@ -94,8 +96,8 @@ def update_workshop(request, workshop_id):
 def batches(request):
     active = ProductionService.get_active_batches()
     completed = ProductionService.get_completed_batches()
+    #print('DEBUG: batches result:', active)
     if not active.success or not completed.success:
-        #print(DEBUG: batches result: result)
         return redirect('production:index')
     
     context = {

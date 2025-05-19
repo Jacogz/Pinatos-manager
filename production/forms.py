@@ -162,15 +162,6 @@ class assignmentRevisionForm(forms.ModelForm):
         if delivered_units > self.instance.batch.initial_quantity:
             raise forms.ValidationError("Las unidades entregadas no pueden ser mayores a la cantidad inicial.")
         return delivered_units
-    
-    
-    def save(self, commit=True):
-        process_assignment = self.instance
-        process_assignment.delivered_units = self.cleaned_data['delivered_units']
-        process_assignment.observation = process_assignment.observation + self.cleaned_data['observation']
-        if commit:
-            process_assignment.save()
-        return process_assignment
         
 
 

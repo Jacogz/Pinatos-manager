@@ -1,50 +1,128 @@
 {% extends 'partials/base.html' %}
 {% block stylesheets %}
 {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
+<link rel="stylesheet" type="text/css" href="{% static 'design/design.css'%}">
 {% endblock %}
 {% block title %}Workshop: {{workshop.name}}{% endblock %}
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <h2>ID: {{workshop.id}}</h2>
-            <p>Name: {{workshop.name}}</p>
-            <p>Responsible: {{workshop.responsible.name}}</p>
-            <p>Address: {{workshop.address}}</p>
-            {% if workshop.email %}
-                <p>Email: {{workshop.email}}</p>
-            {% else %}
-                {% if workshop.responsible.email %}
-                    <p>Email: {{workshop.responsible.email}}</p>
+<div class="container my-4">
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="card-title">{{ workshop.name }}</h2>
+            <p><strong>ID:</strong> {{ workshop.id }}</p>
+            <p><strong>Responsible:</strong> {{ workshop.responsible.name }}</p>
+            <p><strong>Address:</strong> {{ workshop.address }}</p>
+            <p><strong>Email:</strong>
+                {% if workshop.email %}
+                    {{ workshop.email }}
+                {% elif workshop.responsible.email %}
+                    {{ workshop.responsible.email }}
                 {% else %}
-                    <p>Email: No email available</p>
+                    <span class="text-muted">No email available</span>
                 {% endif %}
-            {% endif %}
-            {% if workshop.phone_number %}
-                <p>Phone number: {{workshop.phone_number}}</p>
-            {% else %}
-                {% if workshop.responsible.phone %}
-                    <p>Phone number: {{workshop.responsible.phone}}</p>
+            </p>
+            <p><strong>Phone:</strong>
+                {% if workshop.phone_number %}
+                    {{ workshop.phone_number }}
+                {% elif workshop.responsible.phone %}
+                    {{ workshop.responsible.phone }}
                 {% else %}
-                    <p>Phone number: No number available</p>
+                    <span class="text-muted">No number available</span>
                 {% endif %}
-            {% endif %}
+            </p>
+            <a href="{% url 'production:workshop_update' workshop.id %}" class="btn btn-warning me-2">Editar taller</a>
+            <a href="{% url 'production:workshops' %}" class="btn btn-secondary">Volver a talleres</a>
         </div>
     </div>
-    <div class="container">
-        {% for batch in assignments %}
-        <div class="row">
-            <div class="collection col-md-6">
-                <h2>ID: {{batch.id}}</h2>
-                <p>Initial quantity: {{batch.initial_quantity}}</p>
-                <p>Status: {{batch.status}}</p>
-            </div>
-            <a href="{% url 'production:batch' batch.id %}">View Batch</a>
-        </div>
-        {% endfor %}
-    </div>
-    <a href="{% url 'production:workshop_update' workshop.id %}">Edit Workshop</a>
-    <a href="{% url 'production:workshops' %}">Back to Workshops</a>
+
+    <h3 class="mt-4">Asignaciones Activas</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Lote</th>
+                <th>Proceso</th>
+                <th>Fecha de entrega esperada</th>
+                <th>Unidades entregadas</th>
+                <th>Observación</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for assignment in active_assignments %}
+            <tr>
+                <td><a href="{% url 'production:batch' assignment.batch.id %}">#{{ assignment.batch.id }}</a></td>
+                <td>{{ assignment.process }}</td>
+                <td>{{ assignment.expected_delivery|date:"d/m/Y H:i" }}</td>
+                <td>{{ assignment.delivered_units|default:"-" }}</td>
+                <td>{{ assignment.observation|default:"-" }}</td>
+                <td><span class="badge bg-primary">{{ assignment.status }}</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted">No hay asignaciones activas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 class="mt-4">Asignaciones por Revisar</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Lote</th>
+                <th>Proceso</th>
+                <th>Fecha de entrega</th>
+                <th>Unidades entregadas</th>
+                <th>Observación</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for assignment in unrevised_assignments %}
+            <tr>
+                <td><a href="{% url 'production:batch' assignment.batch.id %}">#{{ assignment.batch.id }}</a></td>
+                <td>{{ assignment.process }}</td>
+                <td>{{ assignment.delivery_date|date:"d/m/Y H:i" }}</td>
+                <td>{{ assignment.delivered_units|default:"-" }}</td>
+                <td>{{ assignment.observation|default:"-" }}</td>
+                <td><span class="badge bg-warning text-dark">{{ assignment.status }}</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted">No hay asignaciones por revisar.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 class="mt-4">Asignaciones Revisadas</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Lote</th>
+                <th>Proceso</th>
+                <th>Fecha de entrega</th>
+                <th>Unidades entregadas</th>
+                <th>Observación</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for assignment in revised_assignments %}
+            <tr>
+                <td><a href="{% url 'production:batch' assignment.batch.id %}">#{{ assignment.batch.id }}</a></td>
+                <td>{{ assignment.process }}</td>
+                <td>{{ assignment.delivery_date|date:"d/m/Y H:i" }}</td>
+                <td>{{ assignment.delivered_units|default:"-" }}</td>
+                <td>{{ assignment.observation|default:"-" }}</td>
+                <td><span class="badge bg-success">{{ assignment.status }}</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted">No hay asignaciones revisadas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

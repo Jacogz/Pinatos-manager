@@ -13,15 +13,37 @@ class Batch(models.Model):
     
     def get_processes(self):
         design_processes= self.design.processes.all()
-        processes = design_processes.order_by("hierarchy")
+        all_processes = design_processes.order_by("hierarchy")
+        assignments = ProcessAssignment.objects.filter(batch=self)
+        processes = []
+        for process in all_processes:
+            assignment = assignments.filter(process=process).first()
+            processes.append({
+                'process': process,
+                'assignment': assignment,
+                'is_assigned': assignment is not None
+            })
         return processes
+    
+    def is_completed(self):
+        processes = self.get_processes()
+        for process in processes:
+            if not process['is_assigned'] or process['assignment'].status in ['active', 'unrevised']:
+                return False
+        return True
+    
+    def get_active_assignment(self):
+        assignments = ProcessAssignment.objects.filter(batch=self)
+        for assignment in assignments:
+            if assignment.status == 'active':
+                return assignment.process.description
+        return None
+        
     
     def is_active(self):
         return self.status == 'active'
     def is_pending(self):
         return self.status == 'pending'
-    def is_completed(self):
-        return self.status == 'completed'
     
             
         
